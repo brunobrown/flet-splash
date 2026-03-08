@@ -1,0 +1,14 @@
+[project]
+name = "custom-splash-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["flet>=0.82.0"]
+
+[tool.flet]
+product = "Custom Splash"
+
+[tool.flet.splash]
+type = "custom"
+source = "custom_splash.dart"
+min_duration = 3.0
+fade_duration = 0.8

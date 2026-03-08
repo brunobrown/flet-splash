@@ -1,0 +1,16 @@
+[project]
+name = "svg-splash-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["flet>=0.82.0"]
+
+[tool.flet]
+product = "SVG Splash"
+
+[tool.flet.splash]
+type = "svg"
+source = "assets/splash.svg"
+background = "#1b1b2f"
+dark_background = "#0f0f1a"
+min_duration = 2.0
+fade_duration = 0.5

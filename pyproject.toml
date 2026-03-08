@@ -1,0 +1,89 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flet-splash"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Bruno Brown", email = "brunobrown.86@gmail.com" }]
+keywords = ["flet", "flutter", "scaffold", "cli", "extension"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "rich>=13.0.0",
+    "tomli>=2.0; python_version < '3.11'",
+]
+
+[project.scripts]
+flet-splash = "flet_splash.main:app"
+
+[project.urls]
+Homepage = "https://github.com/brunobrown/flet-splash"
+Documentation = "https://brunobrown.github.io/flet-splash"
+Repository = "https://github.com/brunobrown/flet-splash"
+Issues = "https://github.com/brunobrown/flet-splash/issues"
+Changelog = "https://github.com/brunobrown/flet-splash/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flet_splash"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=7.0.0",
+    "pytest-asyncio>=0.24.0",
+    "flet[all]>=0.82.0",
+]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.6.0",
+    "mkdocstrings[python]>=0.29.0",
+    "pymdown-extensions>=10.14.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["flet-*"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["flet_splash"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+markers = [
+    "network: tests that download packages from pub.dev (deselect with -m 'not network')",
+]
+
+[tool.ty.rules]
+possibly-unresolved-reference = "warn"
+unresolved-reference = "error"
+unresolved-import = "error"
+invalid-type-form = "warn"

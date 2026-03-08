@@ -1,0 +1,15 @@
+[project]
+name = "color-splash-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["flet>=0.82.0"]
+
+[tool.flet]
+product = "Color Splash"
+
+[tool.flet.splash]
+type = "color"
+background = "#1a1a2e"
+dark_background = "#0d0d1a"
+min_duration = 2.0
+fade_duration = 0.5

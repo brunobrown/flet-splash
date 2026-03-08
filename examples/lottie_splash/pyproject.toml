@@ -1,0 +1,16 @@
+[project]
+name = "lottie-splash-example"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["flet>=0.82.0"]
+
+[tool.flet]
+product = "Lottie Splash"
+
+[tool.flet.splash]
+type = "lottie"
+source = "assets/splash.json"
+background = "#1b0536"
+dark_background = "#0f0020"
+min_duration = 3.0
+fade_duration = 0.8
