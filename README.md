@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/user-attachments/assets/e8a0e357-cced-4d32-a730-81407dccc93d" width="500" height="500" alt="Flet Splash"></p>
+<p align="center"><img src="https://github.com/user-attachments/assets/e5e747bf-79e2-431c-b125-1a410cceff97" width="500" height="500" alt="Flet Splash"></p>
 
 **CLI tool that automatically injects fully customizable splash screens into Flet apps during the Flutter build process. Configure once in `pyproject.toml`, build with `fs-build apk`, and your app launches with a beautiful custom splash.**
 
