@@ -1,7 +1,7 @@
 """Example: Custom Dart splash screen.
 
 Build with:
-    flet-splash apk
+    fs-build apk
 
 The splash uses a developer-provided .dart file containing a
 CustomSplash widget with full Flutter animation support.

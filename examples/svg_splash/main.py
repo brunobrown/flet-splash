@@ -1,7 +1,7 @@
 """Example: SVG splash screen.
 
 Build with:
-    flet-splash apk
+    fs-build apk
 
 The splash shows an SVG image during startup,
 then fades out to reveal the app.

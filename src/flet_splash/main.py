@@ -1,4 +1,4 @@
-"""CLI entry point for flet-splash."""
+"""CLI entry point for fs-build."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from flet_splash.config import load_config
 
 def app() -> None:
     parser = argparse.ArgumentParser(
-        prog="flet-splash",
+        prog="fs-build",
         description="Build Flet apps with a custom splash screen",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=_EPILOG,
@@ -76,15 +76,15 @@ def _find_project_root() -> Path:
 
 _EPILOG = """\
 Examples:
-    flet-splash apk
-    flet-splash aab --split-per-abi
-    flet-splash ipa
-    flet-splash web
-    flet-splash apk --type lottie --source assets/splash.json
-    flet-splash apk --background "#1a1a2e" --min-duration 3.0
+    fs-build apk
+    fs-build aab --split-per-abi
+    fs-build ipa
+    fs-build web
+    fs-build apk --type lottie --source assets/splash.json
+    fs-build apk --background "#1a1a2e" --min-duration 3.0
 
     All extra options are passed directly to flet build:
-    flet-splash apk -v --org com.example --build-version 1.0.0
+    fs-build apk -v --org com.example --build-version 1.0.0
 
 Configuration via pyproject.toml:
     [tool.flet.splash]

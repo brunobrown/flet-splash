@@ -1,6 +1,6 @@
 <p align="center"><img src="" width="500" height="500" alt="Flet Splash"></p>
 
-**CLI tool that automatically injects fully customizable splash screens into Flet apps during the Flutter build process. Configure once in `pyproject.toml`, build with `flet-splash apk`, and your app launches with a beautiful custom splash.**
+**CLI tool that automatically injects fully customizable splash screens into Flet apps during the Flutter build process. Configure once in `pyproject.toml`, build with `fs-build apk`, and your app launches with a beautiful custom splash.**
 
 ![Python](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)
 ![Flet](https://img.shields.io/badge/flet-0.80.0+-00B4D8?logo=flet)
@@ -120,7 +120,7 @@ min_duration = 2.0
 **2. Build your app:**
 
 ```bash
-flet-splash apk
+fs-build apk
 ```
 
 That's it. The splash screen is automatically injected into the Flutter build.
@@ -159,7 +159,7 @@ The injection is:
 
 ## Build Process in Detail
 
-This section explains exactly what happens when you run `flet-splash apk` — from reading your config to delivering the final APK.
+This section explains exactly what happens when you run `fs-build apk` — from reading your config to delivering the final APK.
 
 ### 1. Configuration Loading
 
@@ -463,9 +463,9 @@ text_size = 14                       # text font size in pixels
 Any config option can be overridden via CLI flags:
 
 ```bash
-flet-splash apk --type lottie --source assets/custom_splash.json --background "#1a1a2e"
-flet-splash apk --min-duration 3.0 --fade-duration 0.8
-flet-splash apk --text "Loading..." --text-color "#cccccc" --text-size 16
+fs-build apk --type lottie --source assets/custom_splash.json --background "#1a1a2e"
+fs-build apk --min-duration 3.0 --fade-duration 0.8
+fs-build apk --text "Loading..." --text-color "#cccccc" --text-size 16
 ```
 
 **Priority:** CLI flags > `pyproject.toml` > defaults
@@ -474,7 +474,7 @@ All extra flags are passed directly to `flet build`:
 
 ```bash
 # These flags go straight to flet build
-flet-splash apk -v --org com.example --build-version 1.0.0 --split-per-abi
+fs-build apk -v --org com.example --build-version 1.0.0 --split-per-abi
 ```
 
 ---
@@ -605,14 +605,14 @@ If `dark_background` is not set, the `background` color is used for both modes.
 ## CLI Reference
 
 ```
-Usage: flet-splash [-h] [--type {lottie,image,svg,color,custom}]
-                   [--source SOURCE] [--background BACKGROUND]
-                   [--dark-background DARK_BACKGROUND]
-                   [--min-duration MIN_DURATION]
-                   [--fade-duration FADE_DURATION]
-                   [--text TEXT] [--text-color TEXT_COLOR]
-                   [--text-size TEXT_SIZE] [--clean]
-                   {apk,aab,ipa,web,macos,linux,windows}
+Usage: fs-build [-h] [--type {lottie,image,svg,color,custom}]
+                [--source SOURCE] [--background BACKGROUND]
+                [--dark-background DARK_BACKGROUND]
+                [--min-duration MIN_DURATION]
+                [--fade-duration FADE_DURATION]
+                [--text TEXT] [--text-color TEXT_COLOR]
+                [--text-size TEXT_SIZE] [--clean]
+                {apk,aab,ipa,web,macos,linux,windows}
 ```
 
 | Option | Type | Description |
@@ -632,9 +632,9 @@ Usage: flet-splash [-h] [--type {lottie,image,svg,color,custom}]
 All unrecognized flags are forwarded to `flet build`:
 
 ```bash
-flet-splash apk -v --org com.example --build-version 2.0.0
-#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#                   these go directly to flet build
+fs-build apk -v --org com.example --build-version 2.0.0
+#                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#                these go directly to flet build
 ```
 
 ---
@@ -653,7 +653,7 @@ Flet automatically detects files named `assets/splash.*` and uses them as the na
 flet-splash modifies files inside `build/flutter/`. If you encounter issues, use `--clean` to start fresh:
 
 ```bash
-flet-splash apk --clean
+fs-build apk --clean
 ```
 
 ### Idempotency
@@ -678,7 +678,7 @@ To test an example:
 
 ```bash
 cd examples/color_splash
-flet-splash apk
+fs-build apk
 ```
 
 ---
@@ -689,13 +689,13 @@ flet-splash works with all platforms supported by Flet:
 
 | Platform | Command | Notes |
 |----------|---------|-------|
-| Android (APK) | `flet-splash apk` | Debug APK |
-| Android (AAB) | `flet-splash aab` | Play Store bundle |
-| iOS | `flet-splash ipa` | Requires macOS + Xcode |
-| Web | `flet-splash web` | Static web app |
-| macOS | `flet-splash macos` | Desktop app |
-| Linux | `flet-splash linux` | Desktop app |
-| Windows | `flet-splash windows` | Desktop app |
+| Android (APK) | `fs-build apk` | Debug APK |
+| Android (AAB) | `fs-build aab` | Play Store bundle |
+| iOS | `fs-build ipa` | Requires macOS + Xcode |
+| Web | `fs-build web` | Static web app |
+| macOS | `fs-build macos` | Desktop app |
+| Linux | `fs-build linux` | Desktop app |
+| Windows | `fs-build windows` | Desktop app |
 
 ---
 
@@ -716,7 +716,7 @@ uv tool run ruff check
 uv tool run ty check
 
 # Run the CLI locally
-uv run flet-splash apk
+uv run fs-build apk
 ```
 
 ---

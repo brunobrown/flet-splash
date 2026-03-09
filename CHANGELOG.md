@@ -1,10 +1,16 @@
 # Changelog
 
+## [0.2.0] - 2026-03-09
+
+### Changed
+
+- **CLI command renamed** from `flet-splash` to `fs-build` for a shorter, more intuitive interface aligned with `flet build` (e.g. `fs-build apk`, `fs-build ipa`).
+
 ## [0.1.0] - 2026-03-08
 
 ### Added
 
-- **CLI tool** (`flet-splash`) that automatically injects custom splash screens into Flet apps during the Flutter build process.
+- **CLI tool** (`fs-build`) that automatically injects custom splash screens into Flet apps during the Flutter build process.
 - **Multi-pass build** strategy with 3 smart scenarios: full build (3 steps), inject+rebuild (2 steps), or single pass (already injected).
 - **5 splash types:**
   - `color` — solid color background, no external assets needed.
