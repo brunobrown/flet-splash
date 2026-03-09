@@ -88,6 +88,13 @@ The splash stays visible throughout the entire boot process and fades out gracef
 ## Installation
 
 ```bash
+# Using UV (recommended)
+uv add flet-splash
+
+# Using pip
+pip install flet-splash
+
+# From GitHub (latest development version)
 uv add flet-splash@git+https://github.com/brunobrown/flet-splash.git
 
 # or
