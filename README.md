@@ -177,22 +177,22 @@ flet-splash detects the current state and chooses the optimal build path:
 
 ```
                           ┌─────────────────────────────┐
-                          │  Does build/flutter/ exist?  │
+                          │  Does build/flutter/ exist? │
                           └──────────────┬──────────────┘
                                          │
                           ┌──── NO ──────┼────── YES ───┐
-                          │              │               │
-                          ▼              │               ▼
-                   ┌─────────────┐      │    ┌────────────────────┐
-                   │  FULL BUILD │      │    │  Splash injected?  │
-                   │  (3 steps)  │      │    └─────────┬──────────┘
-                   └─────────────┘      │         YES  │  NO
-                                        │          │   │
-                                        │          ▼   ▼
-                                        │    ┌──────┐ ┌──────────────┐
-                                        │    │SINGLE│ │INJECT+REBUILD│
-                                        │    │ PASS │ │  (2 steps)   │
-                                        │    └──────┘ └──────────────┘
+                          │              │              │
+                          ▼              │              ▼
+                   ┌─────────────┐       │    ┌────────────────────┐
+                   │  FULL BUILD │       │    │  Splash injected?  │
+                   │  (3 steps)  │       │    └─────────┬──────────┘
+                   └─────────────┘       │         YES  │  NO
+                                         │          │   │
+                                         │          ▼   ▼
+                                         │    ┌──────┐ ┌──────────────┐
+                                         │    │SINGLE│ │INJECT+REBUILD│
+                                         │    │ PASS │ │  (2 steps)   │
+                                         │    └──────┘ └──────────────┘
 ```
 
 **Scenario A — Full Build (first time):**
