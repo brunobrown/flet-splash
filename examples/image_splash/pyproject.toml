@@ -9,7 +9,7 @@ product = "Image Splash"
 
 [tool.flet.splash]
 type = "image"
-source = "assets/splash.png"
+source = "assets/custom_splash.png"
 background = "#0d47a1"
 dark_background = "#0a1929"
 min_duration = 2.5

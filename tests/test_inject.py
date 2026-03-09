@@ -314,6 +314,37 @@ flutter:
         assert "assets:" in pubspec
         assert "splash_assets/logo.png" in pubspec
 
+    def test_preserves_existing_assets(self, tmp_path: Path) -> None:
+        """Splash asset must be appended after existing assets, not break indentation."""
+        flutter_dir = _create_flutter_project(tmp_path)
+        pubspec_content = """\
+name: test_app
+dependencies:
+  flet: 0.82.0
+  flutter:
+    sdk: flutter
+flutter:
+  uses-material-design: true
+  assets:
+    - app/app.zip
+    - app/app.zip.hash
+"""
+        (flutter_dir / "pubspec.yaml").write_text(pubspec_content)
+        (tmp_path / "logo.svg").write_text("<svg/>")
+        cfg = _make_config(splash_type=SplashType.SVG, source="logo.svg")
+        inject_splash(flutter_dir, cfg, tmp_path)
+
+        pubspec = (flutter_dir / "pubspec.yaml").read_text()
+        assert "    - app/app.zip\n" in pubspec
+        assert "    - app/app.zip.hash\n" in pubspec
+        assert "    - splash_assets/logo.svg\n" in pubspec
+        # Verify the YAML is valid by checking no line starts at wrong indent
+        import yaml
+
+        parsed = yaml.safe_load(pubspec)
+        assert "splash_assets/logo.svg" in parsed["flutter"]["assets"]
+        assert "app/app.zip" in parsed["flutter"]["assets"]
+
 
 # ---------------------------------------------------------------------------
 # Tests: inject_splash — asset copy

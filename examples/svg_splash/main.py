@@ -31,7 +31,7 @@ def AppView() -> list[ft.Control]:
                         color=ft.Colors.GREY,
                     ),
                     ft.Text(
-                        "Replace assets/splash.svg with your own vector graphic!",
+                        "Replace assets/custom_splash.svg with your own vector graphic!",
                         size=12,
                         italic=True,
                         color=ft.Colors.GREY_400,

@@ -9,7 +9,7 @@ product = "Lottie Splash"
 
 [tool.flet.splash]
 type = "lottie"
-source = "assets/splash.json"
+source = "assets/custom_splash.json"
 background = "#1b0536"
 dark_background = "#0f0020"
 min_duration = 3.0

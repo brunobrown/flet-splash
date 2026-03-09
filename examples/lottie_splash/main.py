@@ -7,7 +7,7 @@ The splash shows a Lottie animation during startup,
 then fades out to reveal the app.
 
 Tip: Download free Lottie animations from https://lottiefiles.com
-and replace assets/splash.json with your own animation.
+and replace assets/custom_splash.json with your own animation.
 """
 
 import flet as ft
@@ -33,7 +33,7 @@ def AppView() -> list[ft.Control]:
                         color=ft.Colors.GREY,
                     ),
                     ft.Text(
-                        "Replace assets/splash.json with your own animation!",
+                        "Replace assets/custom_splash.json with your own animation!",
                         size=12,
                         italic=True,
                         color=ft.Colors.GREY_500,

@@ -187,15 +187,21 @@ def _patch_pubspec(path: Path, config: SplashConfig) -> bool:
 
 
 def _add_flutter_asset(content: str, asset_path: str) -> str:
-    asset_entry = f"    - {asset_path}\n"
-
-    if "  assets:" in content:
-        return content.replace("  assets:\n", f"  assets:\n{asset_entry}", 1)
+    """Add an asset entry to the flutter.assets section, preserving existing indentation."""
+    # Find existing assets section and detect indentation
+    match = re.search(r"^( +)assets:\s*\n(( +)- .+\n)*", content, re.MULTILINE)
+    if match:
+        # Detect indent from existing entries, or use parent indent + 2
+        item_indent = match.group(3) if match.group(3) else match.group(1) + "  "
+        asset_entry = f"{item_indent}- {asset_path}\n"
+        # Insert at the end of the assets list
+        insert_pos = match.end()
+        return content[:insert_pos] + asset_entry + content[insert_pos:]
 
     if "flutter:" in content:
-        return content.replace("flutter:\n", f"flutter:\n  assets:\n{asset_entry}", 1)
+        return content.replace("flutter:\n", f"flutter:\n  assets:\n    - {asset_path}\n", 1)
 
-    return content + f"\nflutter:\n  assets:\n{asset_entry}"
+    return content + f"\nflutter:\n  assets:\n    - {asset_path}\n"
 
 
 def _copy_assets(flutter_dir: Path, config: SplashConfig, project_root: Path) -> bool:
