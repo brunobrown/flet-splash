@@ -52,6 +52,17 @@
 
 ---
 
+## Buy Me a Coffee
+
+If you find this project useful, please consider supporting its development:
+
+<a href="https://www.buymeacoffee.com/brunobrown">
+<img src="https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-1.svg" width="200" alt="Buy Me a Coffee">
+</a>
+
+---
+
+
 ## The Problem
 
 When a Flet app starts, users see **three different screens** before the actual app appears:
@@ -71,16 +82,6 @@ This creates a flickering, unprofessional startup experience — especially on m
 ```
 
 The splash stays visible throughout the entire boot process and fades out gracefully once the app is ready. No flicker, no spinner — just your brand.
-
----
-
-## Buy Me a Coffee
-
-If you find this project useful, please consider supporting its development:
-
-<a href="https://www.buymeacoffee.com/brunobrown">
-<img src="https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-1.svg" width="200" alt="Buy Me a Coffee">
-</a>
 
 ---
 
