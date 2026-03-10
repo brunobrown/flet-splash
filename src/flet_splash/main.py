@@ -92,7 +92,7 @@ Configuration via pyproject.toml:
     source = "assets/splash.json"
     background = "#1a1a2e"
     dark_background = "#0a0a1e"
-    min_duration = 2.0
+    min_duration = 5.0
     fade_duration = 0.5
     text = "Loading..."          # optional text below the splash
     text_color = "#ffffff"

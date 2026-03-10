@@ -84,7 +84,7 @@ class TestLoadConfig:
         assert cfg.source is None
         assert cfg.background == "#000000"
         assert cfg.dark_background is None
-        assert cfg.min_duration_ms == 2000
+        assert cfg.min_duration_ms == 5000
         assert cfg.fade_duration_ms == 500
 
     def test_reads_pyproject(self, tmp_path: Path) -> None:

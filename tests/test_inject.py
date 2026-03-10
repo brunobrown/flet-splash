@@ -229,6 +229,35 @@ class TestInjectMainDart:
         content = (flutter_dir / "lib" / "main.dart").read_text()
         assert "class ErrorScreen extends StatelessWidget" in content
 
+    def test_adds_app_ready_notifier(self, tmp_path: Path) -> None:
+        flutter_dir = _create_flutter_project(tmp_path)
+        inject_splash(flutter_dir, _make_config(), tmp_path)
+
+        content = (flutter_dir / "lib" / "main.dart").read_text()
+        assert "ValueNotifier<bool> _appReady" in content
+
+    def test_injects_ready_signal_in_future_builder(self, tmp_path: Path) -> None:
+        flutter_dir = _create_flutter_project(tmp_path)
+        inject_splash(flutter_dir, _make_config(), tmp_path)
+
+        content = (flutter_dir / "lib" / "main.dart").read_text()
+        assert "_appReady.value = true;" in content
+
+    def test_bootstrap_listens_to_app_ready(self, tmp_path: Path) -> None:
+        flutter_dir = _create_flutter_project(tmp_path)
+        inject_splash(flutter_dir, _make_config(), tmp_path)
+
+        content = (flutter_dir / "lib" / "main.dart").read_text()
+        assert "_appReady.addListener(_maybeHide)" in content
+        assert "_timerDone && _appReady.value" in content
+
+    def test_bootstrap_removes_listener_on_dispose(self, tmp_path: Path) -> None:
+        flutter_dir = _create_flutter_project(tmp_path)
+        inject_splash(flutter_dir, _make_config(), tmp_path)
+
+        content = (flutter_dir / "lib" / "main.dart").read_text()
+        assert "_appReady.removeListener(_maybeHide)" in content
+
 
 # ---------------------------------------------------------------------------
 # Tests: inject_splash — lottie support

@@ -38,7 +38,7 @@ _DEFAULTS: dict[str, object] = {
     "source": None,
     "background": "#000000",
     "dark_background": None,
-    "min_duration": 2.0,
+    "min_duration": 5.0,
     "fade_duration": 0.5,
     "text": None,
     "text_color": "#ffffff",

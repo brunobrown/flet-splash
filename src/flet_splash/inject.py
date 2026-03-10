@@ -7,6 +7,7 @@ from pathlib import Path
 from flet_splash import ui
 from flet_splash.config import SplashConfig, SplashType
 from flet_splash.templates import (
+    APP_READY_NOTIFIER,
     SPLASH_MARKER,
     custom_splash_class,
     extra_imports,
@@ -74,8 +75,10 @@ def _patch_main_dart(path: Path, config: SplashConfig) -> bool:
     original = content
 
     content = _add_imports(content, config)
+    content = _add_app_ready_notifier(content)
     content = _replace_blank_screen_class(content, config)
     content = _replace_blank_screen_refs(content)
+    content = _inject_ready_signal(content)
     content = _wrap_run_app(content)
     content = _append_bootstrap_class(content, config)
 
@@ -107,6 +110,30 @@ def _find_last_import_position(content: str) -> int:
     for m in re.finditer(r"^import\s+.+;$", content, re.MULTILINE):
         pos = m.end() + 1  # +1 for the newline
     return pos
+
+
+def _add_app_ready_notifier(content: str) -> str:
+    """Add the _appReady ValueNotifier global variable after the last import."""
+    if APP_READY_NOTIFIER in content:
+        return content
+
+    last_import = _find_last_import_position(content)
+    insert = "\n" + APP_READY_NOTIFIER + "\n"
+
+    if last_import == -1:
+        return insert + content
+
+    return content[:last_import] + insert + content[last_import:]
+
+
+def _inject_ready_signal(content: str) -> str:
+    """Insert _appReady.value = true inside the FutureBuilder's snapshot.hasData branch."""
+    marker = "if (snapshot.hasData) {"
+    if marker not in content:
+        return content
+
+    signal = "\n          _appReady.value = true;"
+    return content.replace(marker, marker + signal, 1)
 
 
 def _replace_blank_screen_class(content: str, config: SplashConfig) -> str:

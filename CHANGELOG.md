@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] - 2026-03-09
+
+### Improved
+
+- **Dual-condition splash fade** — splash now fades only when both `min_duration` has elapsed AND `prepareApp()` has completed. This prevents white screen flashes on cold starts where app initialization takes longer than `min_duration`. Uses a `ValueNotifier<bool>` signal and `_maybeHide()` pattern for reliable coordination.
+- **Default `min_duration`** updated from 2.0 to 5.0 seconds to better cover cold start times on mobile devices.
+
 ## [0.2.0] - 2026-03-09
 
 ### Changed

@@ -39,6 +39,7 @@
   - [Custom Dart Widget](#custom-dart-widget)
 - [Text Overlay](#text-overlay)
 - [Dark Mode Support](#dark-mode-support)
+- [Understanding `min_duration`](#understanding-min_duration)
 - [CLI Reference](#cli-reference)
 - [Important Notes](#important-notes)
 - [Examples](#examples)
@@ -114,7 +115,7 @@ pip install git+https://github.com/brunobrown/flet-splash.git
 [tool.flet.splash]
 type = "color"
 background = "#1a1a2e"
-min_duration = 2.0
+min_duration = 5.0
 ```
 
 **2. Build your app:**
@@ -327,6 +328,23 @@ This ensures the splash overlay sits **above everything** — `BlankScreen`, `Lo
 
 The `_SplashBootstrap` widget is appended at the end of `main.dart`. This is the core mechanism that creates the overlay effect:
 
+A global `ValueNotifier` is also added to `main.dart`:
+
+```dart
+final ValueNotifier<bool> _appReady = ValueNotifier(false);
+```
+
+And inside the `FutureBuilder`, when `snapshot.hasData` (meaning `prepareApp()` completed and `FletApp` is about to render):
+
+```dart
+if (snapshot.hasData) {
+  _appReady.value = true;  // ← signals the bootstrap
+  return FletApp(...);
+}
+```
+
+The `_SplashBootstrap` widget listens to **both** conditions:
+
 ```dart
 class _SplashBootstrap extends StatefulWidget {
   final Widget child;
@@ -338,14 +356,29 @@ class _SplashBootstrap extends StatefulWidget {
 
 class _SplashBootstrapState extends State<_SplashBootstrap> {
   bool _showSplash = true;
+  bool _timerDone = false;
 
   @override
   void initState() {
     super.initState();
-    // After min_duration, start hiding the splash
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (mounted) setState(() => _showSplash = false);
+    Future.delayed(const Duration(milliseconds: 5000), () {  // ← min_duration
+      _timerDone = true;
+      _maybeHide();
     });
+    _appReady.addListener(_maybeHide);  // ← listens for app readiness
+  }
+
+  void _maybeHide() {
+    // Only fade when BOTH conditions are met
+    if (_timerDone && _appReady.value && mounted) {
+      setState(() => _showSplash = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _appReady.removeListener(_maybeHide);
+    super.dispose();
   }
 
   @override
@@ -374,10 +407,14 @@ class _SplashBootstrapState extends State<_SplashBootstrap> {
 
 1. App starts → `_SplashBootstrap` renders a `Stack` with the app **behind** and `CustomSplash` **on top** (opacity 1.0)
 2. The app boots normally underneath (invisible to the user)
-3. After `min_duration` ms → `_showSplash` becomes `false`
-4. `AnimatedOpacity` fades from 1.0 to 0.0 over `fade_duration` ms
-5. `IgnorePointer` allows touch events to pass through during the fade
-6. The splash becomes fully transparent → the app is revealed
+3. `min_duration` timer runs in parallel with app initialization
+4. When `prepareApp()` completes → `_appReady.value = true`
+5. The splash fades **only when both**: timer elapsed **AND** app is ready
+6. `AnimatedOpacity` fades from 1.0 to 0.0 over `fade_duration` ms
+7. `IgnorePointer` allows touch events to pass through during the fade
+8. The splash becomes fully transparent → the app is revealed
+
+This dual-condition approach ensures no white screen flash on cold starts — the splash stays visible until the app is actually ready to display, regardless of how long the first boot takes.
 
 ### 4. Injection: pubspec.yaml Patching
 
@@ -451,7 +488,7 @@ type = "lottie"                      # lottie | image | svg | color | custom
 source = "assets/custom_splash.json" # path to asset file (relative to project root)
 background = "#1a1a2e"               # background color (hex)
 dark_background = "#0a0a1e"          # dark mode background (optional, falls back to background)
-min_duration = 2.0                   # minimum splash duration in seconds
+min_duration = 5.0                   # minimum splash duration in seconds (see note below)
 fade_duration = 0.5                  # fade-out animation duration in seconds
 text = "Loading..."                  # optional text below the splash
 text_color = "#ffffff"               # text color (hex)
@@ -599,6 +636,45 @@ dark_background = "#0a0a1e"      # dark mode (optional)
 ```
 
 If `dark_background` is not set, the `background` color is used for both modes.
+
+---
+
+## Understanding `min_duration`
+
+The `min_duration` setting controls the **minimum time** the splash screen stays visible. It works together with the app readiness signal to determine when the splash fades out:
+
+```
+splash_visible_time = max(min_duration, app_initialization_time)
+```
+
+The splash fades **only when both conditions are met**:
+1. The `min_duration` timer has elapsed
+2. The app has finished initializing (`prepareApp()` completed)
+
+This means:
+- If `min_duration` is **longer** than the initialization time → splash stays for the full `min_duration`
+- If initialization takes **longer** than `min_duration` → splash waits until the app is ready
+
+### Recommended values
+
+On **cold start** (first launch after install), Flet apps go through several initialization steps: extracting `app.zip`, initializing the Python runtime, and connecting the WebSocket. This can take **5-8 seconds** depending on the device.
+
+On **warm start** (subsequent launches), everything is cached and the app starts much faster (~1-2 seconds).
+
+To ensure the splash covers the entire cold start without showing a white screen, set `min_duration` to cover the worst case:
+
+```toml
+[tool.flet.splash]
+min_duration = 5.0    # 5 seconds — covers most cold starts
+```
+
+| Scenario | Recommended `min_duration` |
+|----------|---------------------------|
+| Simple app, fast devices | `3.0` - `5.0` |
+| Complex app, varied devices | `5.0` - `8.0` |
+| Lottie animation (match duration) | Match your animation length |
+
+> **Why not `min_duration = 0`?** The readiness signal (`prepareApp()` completed) fires before the Flet app has fully rendered its first frame. On cold start, there is a ~3 second gap between `prepareApp()` completing and the app content appearing on screen. Setting `min_duration = 0` would cause the splash to fade during this gap, revealing a white screen. A higher `min_duration` ensures the splash covers this transition.
 
 ---
 

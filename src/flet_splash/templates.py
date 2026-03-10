@@ -9,6 +9,8 @@ SPLASH_MARKER = "// [flet-splash] Custom splash screen"
 _LOTTIE_IMPORT = "import 'package:lottie/lottie.dart';"
 _SVG_IMPORT = "import 'package:flutter_svg/flutter_svg.dart';"
 
+APP_READY_NOTIFIER = "final ValueNotifier<bool> _appReady = ValueNotifier(false);"
+
 _CUSTOM_SPLASH_TEMPLATE = """\
 // [flet-splash] Custom splash screen
 class CustomSplash extends StatelessWidget {
@@ -58,13 +60,28 @@ class _SplashBootstrap extends StatefulWidget {
 
 class _SplashBootstrapState extends State<_SplashBootstrap> {
   bool _showSplash = true;
+  bool _timerDone = false;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: __MIN_DURATION__), () {
-      if (mounted) setState(() => _showSplash = false);
+      _timerDone = true;
+      _maybeHide();
     });
+    _appReady.addListener(_maybeHide);
+  }
+
+  void _maybeHide() {
+    if (_timerDone && _appReady.value && mounted) {
+      setState(() => _showSplash = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _appReady.removeListener(_maybeHide);
+    super.dispose();
   }
 
   @override
