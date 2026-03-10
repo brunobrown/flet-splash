@@ -12,7 +12,7 @@ import flet as ft
 
 @ft.component
 def AppView() -> list[ft.Control]:
-    count, set_count = ft.use_state(0)
+    count, set_count = ft.use_state(int(0))
 
     return [
         ft.Container(
@@ -22,20 +22,26 @@ def AppView() -> list[ft.Control]:
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
-                    ft.Icon(ft.Icons.IMAGE, size=64, color=ft.Colors.TEAL),
-                    ft.Text("Image Splash Example", size=24, weight=ft.FontWeight.BOLD),
+                    ft.Icon(icon=ft.Icons.IMAGE, size=64, color=ft.Colors.TEAL),
+                    ft.Text(value="Image Splash Example", size=24, weight=ft.FontWeight.BOLD),
                     ft.Text(
-                        "The app started with a custom image splash screen.",
+                        value="The app started with a custom image splash screen.",
                         size=14,
                         color=ft.Colors.GREY,
                     ),
                     ft.Divider(height=32),
-                    ft.Text(f"Counter: {count}", size=32),
+                    ft.Text(value=f"Counter: {count}", size=32),
                     ft.Row(
                         alignment=ft.MainAxisAlignment.CENTER,
                         controls=[
-                            ft.FilledButton("- 1", on_click=lambda _: set_count(count - 1)),
-                            ft.FilledButton("+ 1", on_click=lambda _: set_count(count + 1)),
+                            ft.FilledButton(
+                                content=ft.Text(value="- 1"),
+                                on_click=lambda _: set_count(count - 1),
+                            ),
+                            ft.FilledButton(
+                                content=ft.Text(value="+ 1"),
+                                on_click=lambda _: set_count(count + 1),
+                            ),
                         ],
                     ),
                 ],

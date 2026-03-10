@@ -11,6 +11,41 @@ from flet_splash.inject import check_splash_injected, inject_splash
 
 ALL_PLATFORMS = ("apk", "aab", "ipa", "web", "macos", "linux", "windows")
 
+# ---------------------------------------------------------------------------
+# Web app archive helpers
+#
+# When ``flet build web`` runs against an *existing* ``build/flutter``
+# directory it re-packages ``app.zip`` but silently drops the
+# ``__pypackages__`` folder that contains the Python dependencies
+# (e.g. ``flet``).  The archive produced by the *first* build is
+# correct, so we save it and restore it after every subsequent rebuild.
+# ---------------------------------------------------------------------------
+
+
+def _save_web_archive(flutter_dir: Path) -> bytes | None:
+    """Read ``app.zip`` into memory so it can be restored later."""
+    app_zip = flutter_dir / "app" / "app.zip"
+    if app_zip.exists():
+        return app_zip.read_bytes()
+    return None
+
+
+def _restore_web_archive(
+    data: bytes | None,
+    flutter_dir: Path,
+    project_root: Path,
+) -> None:
+    """Write the saved archive back to both build locations."""
+    if data is None:
+        return
+    for target in (
+        flutter_dir / "app" / "app.zip",
+        project_root / "build" / "web" / "assets" / "app" / "app.zip",
+    ):
+        if target.parent.exists():
+            target.write_bytes(data)
+
+
 NEXT_STEPS: dict[str, list[str]] = {
     "apk": ["Install on device: adb install <path-to-apk>"],
     "aab": ["Upload to Google Play Console"],
@@ -59,7 +94,14 @@ def build(
 def _build_single_pass(cmd: list[str], platform: str, project_root: Path) -> None:
     ui.build_info(f"Building {platform.upper()} (splash already configured)")
 
+    flutter_dir = project_root / "build" / "flutter"
+    saved = _save_web_archive(flutter_dir) if platform == "web" else None
+
     result = subprocess.run(cmd, cwd=project_root)
+
+    if saved is not None:
+        _restore_web_archive(saved, flutter_dir, project_root)
+
     _finish(result.returncode, platform, project_root)
 
 
@@ -72,11 +114,17 @@ def _build_inject_and_rebuild(
 ) -> None:
     ui.build_info(f"Building {platform.upper()} with custom splash")
 
+    saved = _save_web_archive(flutter_dir) if platform == "web" else None
+
     ui.step(1, 2, "Injecting custom splash")
     inject_splash(flutter_dir, config, project_root)
 
     ui.step(2, 2, "Compiling")
     result = subprocess.run(cmd, cwd=project_root)
+
+    if saved is not None:
+        _restore_web_archive(saved, flutter_dir, project_root)
+
     _finish(result.returncode, platform, project_root)
 
 
@@ -99,11 +147,18 @@ def _build_full(
         )
         sys.exit(1)
 
+    # Save correct app archive before rebuild (web loses __pypackages__)
+    saved = _save_web_archive(flutter_dir) if platform == "web" else None
+
     ui.step(2, 3, "Injecting custom splash")
     inject_splash(flutter_dir, config, project_root)
 
     ui.step(3, 3, "Rebuilding with custom splash")
     result = subprocess.run(cmd, cwd=project_root)
+
+    if saved is not None:
+        _restore_web_archive(saved, flutter_dir, project_root)
+
     _finish(result.returncode, platform, project_root)
 
 

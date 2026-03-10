@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.2] - 2026-03-10
+
+### Fixed
+
+- **Web build: missing Python dependencies** — when `fs-build web` ran `flet build web` twice (steps 1 and 3), the second run re-packaged `app.zip` without `__pypackages__/`, causing `ModuleNotFoundError: No module named 'flet'` in the browser. The correct `app.zip` from step 1 is now preserved and restored after the rebuild.
+
+### Changed
+
+- **Examples updated** — all 5 example apps now use named arguments (`icon=`, `value=`, `content=`) for full type-checker compatibility.
+
 ## [0.2.1] - 2026-03-09
 
 ### Improved

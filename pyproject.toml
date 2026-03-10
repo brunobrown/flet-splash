@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flet-splash"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 readme = "README.md"
 requires-python = ">=3.10"
@@ -87,3 +87,7 @@ possibly-unresolved-reference = "warn"
 unresolved-reference = "error"
 unresolved-import = "error"
 invalid-type-form = "warn"
+
+[tool.ty.terminal]
+output-format = "concise"  # Links clicáveis no terminal
+#error-on-warning = false   # Opcional: não retornar erro em warnings
